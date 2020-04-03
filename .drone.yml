@@ -2,8 +2,21 @@ kind: pipeline
 name: default
 
 steps:
-- name: test
+- name: gradle-build
   image: gradle:jdk11
   commands:
   - ./gradlew bootJar
   - ./gradlew check
+
+- name: docker-build
+  image: docker:dind
+  volumes:
+  - name: dockersock
+    path: /var/run/docker.sock
+  commands:
+  - docker build .
+
+volumes:
+- name: dockersock
+  host:
+    path: /var/run/docker.sock
