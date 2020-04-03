@@ -2,21 +2,38 @@ kind: pipeline
 name: default
 
 steps:
-- name: gradle-build
-  image: gradle:jdk11
-  commands:
-  - ./gradlew bootJar
-  - ./gradlew check
+# - name: gradle-build
+#   image: gradle:jdk11
+#   commands:
+#   - ./gradlew bootJar
+#   - ./gradlew check
 
-- name: docker-build
-  image: docker:dind
-  volumes:
-  - name: dockersock
-    path: /var/run/docker.sock
-  commands:
-  - docker build .
+- name: publish
+  image: banzaicloud/drone-kaniko
+  settings:
+    registry: index.docker.io # if not provided index.docker.io is supposed
+    repo: index.docker.io/bkpandey/hello-drone
+    tags: ${DRONE_COMMIT_SHA}
+    cache: true
+    skip_tls_verify: false # set to true for testing registries ONLY with self-signed certs
+    build_args:
+    - COMMIT_SHA=${DRONE_COMMIT_SHA}
+    - COMMIT_AUTHOR_EMAIL=${DRONE_COMMIT_AUTHOR_EMAIL}
+    username:
+      from_secret: docker-username
+    password:
+      from_secret: docker-password
+# - name: kaniko-build
+#   image: gcr.io/kaniko-project/executor:debug-v0.18.0
+# - name: docker-build
+#   image: docker:dind
+#   volumes:
+#   - name: dockersock
+#     path: /var/run/docker.sock
+#   commands:
+#   - docker build .
 
-volumes:
-- name: dockersock
-  host:
-    path: /var/run/docker.sock
+# volumes:
+# - name: dockersock
+#   host:
+#     path: /var/run/docker.sock
