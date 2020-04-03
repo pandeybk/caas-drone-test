@@ -11,7 +11,7 @@ steps:
 - name: publish
   image: banzaicloud/drone-kaniko
   settings:
-    registry: index.docker.io # if not provided index.docker.io is supposed
+    # registry: index.docker.io # if not provided index.docker.io is supposed
     repo: bkpandey/hello-drone
     tags: ${DRONE_COMMIT_SHA}
     cache: true
