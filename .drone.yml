@@ -12,7 +12,7 @@ steps:
   image: banzaicloud/drone-kaniko
   settings:
     registry: index.docker.io # if not provided index.docker.io is supposed
-    repo: index.docker.io/bkpandey/hello-drone
+    repo: bkpandey/hello-drone
     tags: ${DRONE_COMMIT_SHA}
     cache: true
     skip_tls_verify: false # set to true for testing registries ONLY with self-signed certs
